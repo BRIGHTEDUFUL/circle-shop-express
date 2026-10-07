@@ -14,13 +14,254 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      order_history: {
+        Row: {
+          actor_id: string | null
+          created_at: string
+          id: string
+          note: string
+          order_id: string
+          status: string
+        }
+        Insert: {
+          actor_id?: string | null
+          created_at?: string
+          id?: string
+          note?: string
+          order_id: string
+          status: string
+        }
+        Update: {
+          actor_id?: string | null
+          created_at?: string
+          id?: string
+          note?: string
+          order_id?: string
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "order_history_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      orders: {
+        Row: {
+          address: string
+          created_at: string
+          customer_name: string
+          delivery_fee: number
+          email: string
+          fulfillment: string
+          id: string
+          items: Json
+          payment_method: string
+          payment_status: string
+          phone: string
+          provider: string | null
+          reference: string
+          status: string
+          subtotal: number
+          total: number
+          transaction_reference: string | null
+          user_id: string | null
+          zone: string
+        }
+        Insert: {
+          address?: string
+          created_at?: string
+          customer_name: string
+          delivery_fee: number
+          email: string
+          fulfillment: string
+          id?: string
+          items: Json
+          payment_method: string
+          payment_status?: string
+          phone: string
+          provider?: string | null
+          reference?: string
+          status?: string
+          subtotal: number
+          total: number
+          transaction_reference?: string | null
+          user_id?: string | null
+          zone: string
+        }
+        Update: {
+          address?: string
+          created_at?: string
+          customer_name?: string
+          delivery_fee?: number
+          email?: string
+          fulfillment?: string
+          id?: string
+          items?: Json
+          payment_method?: string
+          payment_status?: string
+          phone?: string
+          provider?: string | null
+          reference?: string
+          status?: string
+          subtotal?: number
+          total?: number
+          transaction_reference?: string | null
+          user_id?: string | null
+          zone?: string
+        }
+        Relationships: []
+      }
+      products: {
+        Row: {
+          brand: string
+          category: string
+          description: string
+          id: string
+          image_key: string
+          name: string
+          original_price: number | null
+          price: number
+          specs: Json
+          stock: number
+          verified: boolean
+        }
+        Insert: {
+          brand: string
+          category: string
+          description?: string
+          id: string
+          image_key: string
+          name: string
+          original_price?: number | null
+          price: number
+          specs?: Json
+          stock?: number
+          verified?: boolean
+        }
+        Update: {
+          brand?: string
+          category?: string
+          description?: string
+          id?: string
+          image_key?: string
+          name?: string
+          original_price?: number | null
+          price?: number
+          specs?: Json
+          stock?: number
+          verified?: boolean
+        }
+        Relationships: []
+      }
+      saved_addresses: {
+        Row: {
+          address: string
+          id: string
+          name: string
+          phone: string
+          user_id: string
+        }
+        Insert: {
+          address: string
+          id?: string
+          name: string
+          phone: string
+          user_id: string
+        }
+        Update: {
+          address?: string
+          id?: string
+          name?: string
+          phone?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      store_settings: {
+        Row: {
+          address: string
+          central_fee: number
+          email: string
+          free_threshold: number
+          greater_fee: number
+          hero_subtitle: string
+          hero_title: string
+          hours: string
+          id: number
+          momo_name: string
+          momo_number: string
+          nationwide_fee: number
+          ordering_enabled: boolean
+          phone: string
+        }
+        Insert: {
+          address?: string
+          central_fee?: number
+          email?: string
+          free_threshold?: number
+          greater_fee?: number
+          hero_subtitle?: string
+          hero_title?: string
+          hours?: string
+          id?: number
+          momo_name?: string
+          momo_number?: string
+          nationwide_fee?: number
+          ordering_enabled?: boolean
+          phone?: string
+        }
+        Update: {
+          address?: string
+          central_fee?: number
+          email?: string
+          free_threshold?: number
+          greater_fee?: number
+          hero_subtitle?: string
+          hero_title?: string
+          hours?: string
+          id?: number
+          momo_name?: string
+          momo_number?: string
+          nationwide_fee?: number
+          ordering_enabled?: boolean
+          phone?: string
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          role: string
+          user_id: string
+        }
+        Insert: {
+          role: string
+          user_id: string
+        }
+        Update: {
+          role?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      is_staff: { Args: never; Returns: boolean }
+      place_store_order: { Args: { payload: Json }; Returns: Json }
+      staff_update_order: {
+        Args: { new_payment: string; new_status: string; order_uuid: string }
+        Returns: undefined
+      }
+      track_store_order: {
+        Args: { customer_phone: string; ref: string }
+        Returns: Json
+      }
     }
     Enums: {
       [_ in never]: never
