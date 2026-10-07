@@ -1,0 +1,10 @@
+import desk from '@/assets/desk.jpg.asset.json';
+import chair from '@/assets/chair.jpg.asset.json';
+import keyboard from '@/assets/keyboard.jpg.asset.json';
+import mouse from '@/assets/mouse.jpg.asset.json';
+import mic from '@/assets/mic.jpg.asset.json';
+import arm from '@/assets/arm.jpg.asset.json';
+import workspace from '@/assets/workspace.jpg.asset.json';
+import chairDetail from '@/assets/chair-detail.jpg.asset.json';
+import logo from '@/assets/store-logo.jpeg.asset.json';
+export const images:Record<string,string>={desk:desk.url,gaming:desk.url,chair:chair.url,keyboard:keyboard.url,mouse:mouse.url,mic:mic.url,arm:arm.url,stand:arm.url,stream:mic.url,workspace:workspace.url,'chair-detail':chairDetail.url,logo:logo.url};
