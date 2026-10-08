@@ -35,15 +35,15 @@ function Editor({draft,isNew,onDone,onCancel}:{draft:Draft;isNew?:boolean;onDone
   const [d,setD]=useState(draft),[busy,setBusy]=useState(false);
   const set=<K extends keyof Draft>(k:K,v:Draft[K])=>setD(x=>({...x,[k]:v}));
   const addPhotos=async(files:FileList|null,main:boolean)=>{if(!files?.length)return;setBusy(true);try{const urls=[];for(const f of Array.from(files))urls.push(await upload(f));if(main){set('image_key',urls[0]!);if(urls.length>1)set('gallery',[...d.gallery,...urls.slice(1)]);}else set('gallery',[...d.gallery,...urls]);toast.success('Photo uploaded');}catch(e){toast.error(e instanceof Error?e.message:'Upload failed');}setBusy(false);};
-  const save=async(e:React.FormEvent)=>{e.preventDefault();
+  const save=async(e:React.FormEvent):Promise<void>=>{e.preventDefault();
     const price=Number(d.price),stock=Number(d.stock),orig=d.original_price?Number(d.original_price):null;
-    if(!(price>0))return toast.error('Enter a price above zero.');
-    if(!Number.isInteger(stock)||stock<0)return toast.error('Stock must be a whole number.');
-    if(orig!==null&&orig<=price)return toast.error('Original price must be higher than the sale price.');
-    if(!d.image_key)return toast.error('Add a main photo.');
+    if(!(price>0)){toast.error('Enter a price above zero.');return;}
+    if(!Number.isInteger(stock)||stock<0){toast.error('Stock must be a whole number.');return;}
+    if(orig!==null&&orig<=price){toast.error('Original price must be higher than the sale price.');return;}
+    if(!d.image_key){toast.error('Add a main photo.');return;}
     if(d.verified&&!/^https:\/\//.test(d.image_key)&&!window.confirm('This item still uses a stock illustration photo. Mark verified anyway?'))return;
     const id=isNew?(d.id||d.name).toLowerCase().trim().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,''):d.id;
-    if(!id)return toast.error('Enter a product name.');
+    if(!id){toast.error('Enter a product name.');return;}
     const row={id,name:d.name.trim(),brand:d.brand.trim(),category:d.category,price,original_price:orig,stock,description:d.description.trim(),image_key:d.image_key,gallery:d.gallery,specs:Object.fromEntries(d.specs.filter(([k,v])=>k.trim()&&v.trim()).map(([k,v])=>[k.trim(),v.trim()])),verified:d.verified};
     setBusy(true);const {error}=isNew?await supabase.from('products').insert(row):await supabase.from('products').update(row).eq('id',id);setBusy(false);
     if(error)toast.error(error.code==='23505'?'A product with this link name already exists.':error.message);else{toast.success(isNew?'Product added':'Product saved');onDone();}};
