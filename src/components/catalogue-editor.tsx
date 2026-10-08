@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
-import { categories,specs as specRows,type Product } from '@/lib/store';
+import { specs as specRows,type Product,type Category } from '@/lib/store';
 import { images } from '@/lib/store-images';
 import { toast } from 'sonner';
 
@@ -16,22 +16,22 @@ async function upload(file:File){
   return signed.data.signedUrl;
 }
 type Draft={id:string;name:string;brand:string;category:string;price:string;original_price:string;stock:string;description:string;image_key:string;gallery:string[];specs:[string,string][];verified:boolean};
-const toDraft=(p?:Product):Draft=>({id:p?.id??'',name:p?.name??'',brand:p?.brand??'',category:p?.category??'desks',price:p?String(p.price):'',original_price:p?.original_price!=null?String(p.original_price):'',stock:p?String(p.stock):'0',description:p?.description??'',image_key:p?.image_key??'',gallery:p?.gallery??[],specs:p?specRows(p.specs) as [string,string][]:[],verified:p?.verified??false});
+const toDraft=(p?:Product):Draft=>({id:p?.id??'',name:p?.name??'',brand:p?.brand??'',category:p?.category??'',price:p?String(p.price):'',original_price:p?.original_price!=null?String(p.original_price):'',stock:p?String(p.stock):'0',description:p?.description??'',image_key:p?.image_key??'',gallery:p?.gallery??[],specs:p?specRows(p.specs) as [string,string][]:[],verified:p?.verified??false});
 
-export function CatalogueEditor({products,refresh}:{products:Product[];refresh:()=>void}){
+export function CatalogueEditor({products,categories,refresh}:{products:Product[];categories:Category[];refresh:()=>void}){
   const [editing,setEditing]=useState<string|null>(null),[q,setQ]=useState(''),[show,setShow]=useState<'all'|'sample'|'verified'>('all');
   const list=products.filter(p=>(show==='all'||(show==='verified')===p.verified)&&`${p.name} ${p.brand} ${p.id}`.toLowerCase().includes(q.toLowerCase()));
   const samples=products.filter(p=>!p.verified).length;
   return <div>
     <p className="mb-5 text-sm text-muted-foreground">{samples} of {products.length} listings are still samples. Replace each with the real name, price, specifications, photos and stock, then mark it verified. Only verified items can be ordered.</p>
     <div className="mb-5 flex flex-wrap gap-3"><input aria-label="Search catalogue" className="max-w-xs" placeholder="Search products" value={q} onChange={e=>setQ(e.target.value)}/><select aria-label="Show listings" className="max-w-[12rem]" value={show} onChange={e=>setShow(e.target.value as typeof show)}><option value="all">All listings</option><option value="sample">Samples only</option><option value="verified">Verified only</option></select><Button onClick={()=>setEditing('new')}>Add product</Button></div>
-    {editing==='new'&&<Editor draft={toDraft()} isNew onDone={()=>{setEditing(null);refresh();}} onCancel={()=>setEditing(null)}/>}
-    {list.map(p=>editing===p.id?<Editor key={p.id} draft={toDraft(p)} onDone={()=>{setEditing(null);refresh();}} onCancel={()=>setEditing(null)}/>:
+    {editing==='new'&&<Editor categories={categories} draft={toDraft()} isNew onDone={()=>{setEditing(null);refresh();}} onCancel={()=>setEditing(null)}/>}
+    {list.map(p=>editing===p.id?<Editor categories={categories} key={p.id} draft={toDraft(p)} onDone={()=>{setEditing(null);refresh();}} onCancel={()=>setEditing(null)}/>:
       <div key={p.id} className="solid-panel mb-3 flex items-center gap-4"><img src={images[p.image_key]} alt="" className="size-14 rounded object-cover"/><div className="min-w-0 flex-1"><p className="font-semibold">{p.name}</p><p className="text-xs text-muted-foreground">{p.brand} · GH₵ {p.price} · {p.stock} in stock</p></div><span className={`text-xs font-semibold ${p.verified?'text-success':'text-offer'}`}>{p.verified?'Verified':'Sample'}</span><Button variant="outline" onClick={()=>setEditing(p.id)}>Edit</Button></div>)}
   </div>;
 }
 
-function Editor({draft,isNew,onDone,onCancel}:{draft:Draft;isNew?:boolean;onDone:()=>void;onCancel:()=>void}){
+function Editor({categories,draft,isNew,onDone,onCancel}:{categories:Category[];draft:Draft;isNew?:boolean;onDone:()=>void;onCancel:()=>void}){
   const [d,setD]=useState(draft),[busy,setBusy]=useState(false);
   const set=<K extends keyof Draft>(k:K,v:Draft[K])=>setD(x=>({...x,[k]:v}));
   const addPhotos=async(files:FileList|null,main:boolean)=>{if(!files?.length)return;setBusy(true);try{const urls=[];for(const f of Array.from(files))urls.push(await upload(f));if(main){set('image_key',urls[0]!);if(urls.length>1)set('gallery',[...d.gallery,...urls.slice(1)]);}else set('gallery',[...d.gallery,...urls]);toast.success('Photo uploaded');}catch(e){toast.error(e instanceof Error?e.message:'Upload failed');}setBusy(false);};

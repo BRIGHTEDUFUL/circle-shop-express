@@ -5,7 +5,7 @@ import { requireSupabaseAuth } from '@/integrations/supabase/auth-middleware';
 export const getStore=createServerFn({method:'GET'}).handler(async()=>{
  const key=process.env['SUPABASE_PUBLISHABLE_KEY']!;
  const client=createClient<Database>(process.env['SUPABASE_URL']!,key,{auth:{persistSession:false},global:{fetch:(input,init)=>{const h=new Headers(init?.headers);if(key.startsWith('sb_')&&h.get('Authorization')===`Bearer ${key}`)h.delete('Authorization');h.set('apikey',key);return fetch(input,{...init,headers:h});}}});
- const [p,s,c]=await Promise.all([client.from('products').select('*').order('id'),client.from('categories').select('*').order('sort_order'),client.from('store_settings').select('*').eq('id',1).single()]);
+ const [p,c,s]=await Promise.all([client.from('products').select('*').order('id'),client.from('categories').select('*').order('sort_order'),client.from('store_settings').select('*').eq('id',1).single()]);
  if(p.error||c.error||s.error||!s.data)throw new Error('The store could not load. Please try again.');
  return {products:p.data,categories:c.data,settings:s.data};
 });
