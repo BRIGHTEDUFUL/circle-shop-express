@@ -120,6 +120,7 @@ export type Database = {
           brand: string
           category: string
           description: string
+          gallery: string[]
           id: string
           image_key: string
           name: string
@@ -133,6 +134,7 @@ export type Database = {
           brand: string
           category: string
           description?: string
+          gallery?: string[]
           id: string
           image_key: string
           name: string
@@ -146,6 +148,7 @@ export type Database = {
           brand?: string
           category?: string
           description?: string
+          gallery?: string[]
           id?: string
           image_key?: string
           name?: string

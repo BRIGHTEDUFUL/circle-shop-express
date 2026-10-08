@@ -8,6 +8,13 @@
       "when": 1791416419876,
       "tag": "0000_store_orders_catalogue",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1791418063139,
+      "tag": "0001_product_photos",
+      "breakpoints": true
     }
   ]
 }
