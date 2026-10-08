@@ -22,6 +22,13 @@
       "when": 1791418073831,
       "tag": "0002_product_photos_staff_read",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1791418233353,
+      "tag": "0003_customizable_store",
+      "breakpoints": true
     }
   ]
 }

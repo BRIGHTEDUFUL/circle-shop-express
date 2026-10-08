@@ -14,6 +14,33 @@ export type Database = {
   }
   public: {
     Tables: {
+      categories: {
+        Row: {
+          id: string
+          image_key: string
+          name: string
+          short_name: string
+          sort_order: number
+          visible: boolean
+        }
+        Insert: {
+          id: string
+          image_key?: string
+          name: string
+          short_name: string
+          sort_order?: number
+          visible?: boolean
+        }
+        Update: {
+          id?: string
+          image_key?: string
+          name?: string
+          short_name?: string
+          sort_order?: number
+          visible?: boolean
+        }
+        Relationships: []
+      }
       order_history: {
         Row: {
           actor_id: string | null
@@ -187,10 +214,13 @@ export type Database = {
       store_settings: {
         Row: {
           address: string
+          announcement: string
           central_fee: number
           email: string
+          featured_ids: string[]
           free_threshold: number
           greater_fee: number
+          hero_image: string
           hero_subtitle: string
           hero_title: string
           hours: string
@@ -200,13 +230,18 @@ export type Database = {
           nationwide_fee: number
           ordering_enabled: boolean
           phone: string
+          setup_image: string
+          whatsapp: string
         }
         Insert: {
           address?: string
+          announcement?: string
           central_fee?: number
           email?: string
+          featured_ids?: string[]
           free_threshold?: number
           greater_fee?: number
+          hero_image?: string
           hero_subtitle?: string
           hero_title?: string
           hours?: string
@@ -216,13 +251,18 @@ export type Database = {
           nationwide_fee?: number
           ordering_enabled?: boolean
           phone?: string
+          setup_image?: string
+          whatsapp?: string
         }
         Update: {
           address?: string
+          announcement?: string
           central_fee?: number
           email?: string
+          featured_ids?: string[]
           free_threshold?: number
           greater_fee?: number
+          hero_image?: string
           hero_subtitle?: string
           hero_title?: string
           hours?: string
@@ -232,6 +272,8 @@ export type Database = {
           nationwide_fee?: number
           ordering_enabled?: boolean
           phone?: string
+          setup_image?: string
+          whatsapp?: string
         }
         Relationships: []
       }
